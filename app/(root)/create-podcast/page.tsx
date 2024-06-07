@@ -32,6 +32,10 @@ import GenerateThumbnail from "@/components/GenerateThumbnail";
 import { Loader } from "lucide-react";
 import { Id } from "@/convex/_generated/dataModel";
 import { VoiceType } from "@/types";
+import { useToast } from "@/components/ui/use-toast";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   podcastTitle: z.string().min(2),
@@ -39,6 +43,9 @@ const formSchema = z.object({
 });
 
 const CreatePodcast = () => {
+  const { toast } = useToast();
+  const router = useRouter();
+
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const [imagePrompt, setImagePrompt] = useState<string>("");
@@ -56,6 +63,8 @@ const CreatePodcast = () => {
   const [voiceType, setVoiceType] = useState<VoiceType | null>(null);
   const [voicePrompt, setVoicePrompt] = useState<string>("");
 
+  const createPodcast = useMutation(api.podcasts.createPodcast);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -64,10 +73,44 @@ const CreatePodcast = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    setIsSubmitting(true);
+
+    try {
+      if (!audioURL || !imageURL || !voiceType) {
+        throw new Error("Please generate audio and image");
+      }
+
+      const podcast = await createPodcast({
+        podcastTitle: data.podcastTitle,
+        podcastDescription: data.podcastDescription,
+        audioURL,
+        imageURL,
+        voiceType,
+        voicePrompt,
+        imagePrompt,
+        audioDuration,
+        views: 0,
+        audioStorageId: audioStorageId!,
+        imageStorageId: imageStorageId!,
+      });
+
+      toast({
+        title: "Podcat created",
+      });
+      setIsSubmitting(false);
+
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        toast({
+          title: error.message,
+          variant: "destructive",
+        });
+      }
+      setIsSubmitting(false);
+    }
   }
 
   return (
