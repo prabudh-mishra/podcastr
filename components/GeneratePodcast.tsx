@@ -1,15 +1,39 @@
 import { GeneratePodcastProps } from "@/types";
 import React, { useState } from "react";
-import { Textarea } from "./ui/textarea";
-import { Label } from "@radix-ui/react-label";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Loader } from "lucide-react";
 
-const useGeneratePodcast = (props: GeneratePodcastProps) => {
-  // Logic for podcast generation
+const useGeneratePodcast = ({
+  setAudio,
+  voiceType,
+  voicePrompt,
+  setAudioStorageId,
+}: GeneratePodcastProps) => {
+  const [isGenerating, setIsGenerating] = useState<boolean>(false);
+
+  const generatePodcast = async () => {
+    setIsGenerating(true);
+    setAudio("");
+
+    if (!voicePrompt) {
+      // TODO: show error message
+      return setIsGenerating(false);
+    }
+
+    try {
+      // const response = await getPodcastAudio({voice: voiceType, input: voicePrompt})
+    } catch (error) {
+      // TODO: show error message
+      console.log("error generating podcast", error);
+      setIsGenerating(false);
+    }
+  };
+
   return {
-    isGenerating: false,
-    generatePodcast: () => {},
+    isGenerating,
+    generatePodcast,
   };
 };
 
