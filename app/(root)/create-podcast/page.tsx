@@ -31,6 +31,7 @@ import GeneratePodcast from "@/components/GeneratePodcast";
 import GenerateThumbnail from "@/components/GenerateThumbnail";
 import { Loader } from "lucide-react";
 import { Id } from "@/convex/_generated/dataModel";
+import { VoiceType } from "@/types";
 
 const formSchema = z.object({
   podcastTitle: z.string().min(2),
@@ -52,7 +53,7 @@ const CreatePodcast = () => {
     null
   );
 
-  const [voiceType, setVoiceType] = useState<string | null>(null);
+  const [voiceType, setVoiceType] = useState<VoiceType | null>(null);
   const [voicePrompt, setVoicePrompt] = useState<string>("");
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -159,7 +160,7 @@ const CreatePodcast = () => {
             <GeneratePodcast
               setAudioStorageId={setAudioStorageId}
               setAudio={setAudioURL}
-              voiceType={voiceType}
+              voiceType={voiceType!}
               audio={audioURL}
               voicePrompt={voicePrompt}
               setVoicePrompt={setVoicePrompt}
