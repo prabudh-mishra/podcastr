@@ -104,7 +104,9 @@ const CreatePodcast = () => {
               <Label className="text-16 font-bold text-white-1">
                 Select AI Voice
               </Label>
-              <Select onValueChange={(value) => setVoiceType(value)}>
+              <Select
+                onValueChange={(value) => setVoiceType(value as VoiceType)}
+              >
                 <SelectTrigger
                   className={cn(
                     "text-16 w-full border-none bg-black-1 text-gray-1 focus:ring-offset-orange-1"
@@ -166,7 +168,13 @@ const CreatePodcast = () => {
               setVoicePrompt={setVoicePrompt}
               setAudioDuration={setAudioDuration}
             />
-            <GenerateThumbnail />
+            <GenerateThumbnail
+              setImage={setImageURL}
+              setImageStorageId={setImageStorageId}
+              image={imageURL}
+              imagePrompt={imagePrompt}
+              setImagePrompt={setImagePrompt}
+            />
           </div>
           <div className="mt-10 w-full">
             <Button
