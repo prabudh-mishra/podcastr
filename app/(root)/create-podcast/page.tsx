@@ -26,20 +26,40 @@ import {
 import { cn } from "@/lib/utils";
 import { voiceDetails } from "@/constants";
 import { useState } from "react";
+import { Textarea } from "@/components/ui/textarea";
+import GeneratePodcast from "@/components/GeneratePodcast";
+import GenerateThumbnail from "@/components/GenerateThumbnail";
+import { Loader } from "lucide-react";
+import { Id } from "@/convex/_generated/dataModel";
 
 const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
+  podcastTitle: z.string().min(2),
+  podcastDescription: z.string().min(2),
 });
 
 const CreatePodcast = () => {
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  const [imagePrompt, setImagePrompt] = useState<string>("");
+  const [audioStorageId, setAudioStorageId] = useState<Id<"_storage"> | null>(
+    null
+  );
+  const [imageURL, setImageURL] = useState<string>("");
+
+  const [audioURL, setAudioURL] = useState<string>("");
+  const [audioDuration, setAudioDuration] = useState<number>(0);
+  const [imageStorageId, setImageStorageId] = useState<Id<"_storage"> | null>(
+    null
+  );
+
   const [voiceType, setVoiceType] = useState<string | null>(null);
+  const [voicePrompt, setVoicePrompt] = useState<string>("");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      podcastTitle: "",
+      podcastDescription: "",
     },
   });
 
@@ -114,8 +134,54 @@ const CreatePodcast = () => {
                 )}
               </Select>
             </div>
+
+            <FormField
+              control={form.control}
+              name="podcastDescription"
+              render={({ field }) => (
+                <FormItem className="flex flex-col gap-2.5">
+                  <FormLabel className="text-16 font-bold text-white-1">
+                    Description
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      className="input-class focus-visible:ring-offset-orange-1"
+                      placeholder="Write a short description about the podcast"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-white-1" />
+                </FormItem>
+              )}
+            />
           </div>
-          {/* <Button type="submit">Submit</Button> */}
+          <div className="flex flex-col pt-10">
+            <GeneratePodcast
+              setAudioStorageId={setAudioStorageId}
+              setAudio={setAudioURL}
+              voiceType={voiceType}
+              audio={audioURL}
+              voicePrompt={voicePrompt}
+              setVoicePrompt={setVoicePrompt}
+              setAudioDuration={setAudioDuration}
+            />
+            <GenerateThumbnail />
+          </div>
+          <div className="mt-10 w-full">
+            <Button
+              type="submit"
+              className="text-16 w-full bg-orange-1 py-4 font-extrabold text-white-1 transition-all duration-500 hover:bg-black-1"
+            >
+              {isSubmitting ? (
+                <>
+                  Submitting
+                  <Loader size={20} className="animate-spin ml-2" />
+                </>
+              ) : (
+                "Submit and Publish Podcast"
+              )}
+            </Button>
+          </div>
         </form>
       </Form>
     </section>
