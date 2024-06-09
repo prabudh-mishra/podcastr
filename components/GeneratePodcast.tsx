@@ -1,14 +1,14 @@
 import { GeneratePodcastProps } from "@/types";
 import React, { useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import { Textarea } from "./ui/textarea";
+import { Label } from "./ui/label";
+import { Button } from "./ui/button";
 import { Loader } from "lucide-react";
 import { useAction, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { v4 as uuidv4 } from "uuid";
 import { useUploadFiles } from "@xixixao/uploadstuff/react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "./ui/use-toast";
 
 const useGeneratePodcast = ({
   setAudio,

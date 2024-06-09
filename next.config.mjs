@@ -10,6 +10,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "ardent-crane-702.convex.cloud",
       },
+      {
+        protocol: "https",
+        hostname: "img.clerk.com",
+      },
     ],
   },
 };
