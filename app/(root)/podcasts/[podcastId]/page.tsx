@@ -1,4 +1,5 @@
 "use client";
+
 import EmptyState from "@/components/EmptyState";
 import LoaderSpinner from "@/components/LoaderSpinner";
 import PodcastCard from "@/components/PodcastCard";
@@ -19,26 +20,24 @@ const PodcastDetails = ({
 
   const podcast = useQuery(api.podcasts.getPodcastById, { podcastId });
 
-  const similiarPodcasts = useQuery(api.podcasts.getPodcastByVoiceType, {
+  const similarPodcasts = useQuery(api.podcasts.getPodcastByVoiceType, {
     podcastId,
   });
 
   const isOwner = user?.id === podcast?.authorId;
 
-  if (!podcast || !similiarPodcasts) {
-    return <LoaderSpinner />;
-  }
+  if (!similarPodcasts || !podcast) return <LoaderSpinner />;
 
   return (
-    <section className="flex flex-col w-full">
+    <section className="flex w-full flex-col">
       <header className="mt-9 flex items-center justify-between">
         <h1 className="text-20 font-bold text-white-1">Currently Playing</h1>
         <figure className="flex gap-3">
           <Image
             src="/icons/headphone.svg"
-            alt="headphone"
             width={24}
             height={24}
+            alt="headphone"
           />
           <h2 className="text-16 font-bold text-white-1">{podcast?.views}</h2>
         </figure>
@@ -52,7 +51,7 @@ const PodcastDetails = ({
         {...podcast}
       />
 
-      <p className="text-white-2 text-16 pb-8 pt[45px] font-medium max-md:text-center">
+      <p className="text-white-2 text-16 pb-8 pt-[45px] font-medium max-md:text-center">
         {podcast?.podcastDescription}
       </p>
 
@@ -70,32 +69,33 @@ const PodcastDetails = ({
           </p>
         </div>
       </div>
+      <section className="mt-8 flex flex-col gap-5">
+        <h1 className="text-20 font-bold text-white-1">Similar Podcasts</h1>
 
-      <div className="flex flex-col gap-5 mt-8">
-        <div className="text-20 font-bold text-white-1">Similiar Podcasts</div>
-
-        {similiarPodcasts && similiarPodcasts.length ? (
+        {similarPodcasts && similarPodcasts.length > 0 ? (
           <div className="podcast_grid">
-            {similiarPodcasts?.map(
+            {similarPodcasts?.map(
               ({ _id, podcastTitle, podcastDescription, imageURL }) => (
                 <PodcastCard
                   key={_id}
-                  podcastId={_id}
+                  imgURL={imageURL as string}
                   title={podcastTitle}
-                  imgURL={imageURL!}
                   description={podcastDescription}
+                  podcastId={_id}
                 />
               )
             )}
           </div>
         ) : (
-          <EmptyState
-            title="No Similiar Podcasts found"
-            buttonLink="/discover"
-            buttonText="Discover more podcasts"
-          />
+          <>
+            <EmptyState
+              title="No similar podcasts found"
+              buttonLink="/discover"
+              buttonText="Discover more podcasts"
+            />
+          </>
         )}
-      </div>
+      </section>
     </section>
   );
 };

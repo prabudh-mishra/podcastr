@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { api } from "@/convex/_generated/api";
+import { useAudio } from "@/providers/AudioProvider";
 import { PodcastDetailPlayerProps } from "@/types";
 
 import LoaderSpinner from "./LoaderSpinner";
 import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
-import { useAudio } from "@/providers/AudioProvider";
 
 const PodcastDetailPlayer = ({
   audioURL,
@@ -105,7 +105,7 @@ const PodcastDetailPlayer = ({
         </div>
       </div>
       {isOwner && (
-        <div className="relative mt-3">
+        <div className="relative mt-2">
           <Image
             src="/icons/three-dots.svg"
             width={30}
