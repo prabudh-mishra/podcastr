@@ -7,9 +7,12 @@ import Header from "./Header";
 import Carousel from "./Carousel";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useRouter } from "next/navigation";
 
 const RightSidebar = () => {
   const { user } = useUser();
+
+  const router = useRouter();
 
   const topPodcasters = useQuery(api.users.getTopUserByPodcastCount);
 
@@ -36,6 +39,37 @@ const RightSidebar = () => {
       <section>
         <Header headerTitle="Fans also like" />
         <Carousel fansLikeDetail={topPodcasters!} />
+      </section>
+
+      <section className="flex flex-col gap-8 pt-12">
+        <Header headerTitle="Top Podcasters" />
+        <div className="flex flex-col gap-6">
+          {topPodcasters?.slice(0, 4).map((podcaster) => (
+            <div
+              key={podcaster._id}
+              className="flex cursor-pointer justify-between"
+              onClick={() => router.push(`profile/${podcaster.clerkId}`)}
+            >
+              <figure className="flex items-center gap-2">
+                <Image
+                  src={podcaster.imageURL}
+                  alt={podcaster.name}
+                  width={44}
+                  height={44}
+                  className="rounded-lg aspect-square"
+                />
+                <h2 className="text-14 font-semibold text-white-1">
+                  {podcaster.name}
+                </h2>
+              </figure>
+              <div className="flex items-center">
+                <p className="text-12 font-normal">
+                  {podcaster.totalPodcasts} podcasts
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
     </div>
   );
