@@ -31,7 +31,6 @@ import GeneratePodcast from "@/components/GeneratePodcast";
 import GenerateThumbnail from "@/components/GenerateThumbnail";
 import { Loader } from "lucide-react";
 import { Id } from "@/convex/_generated/dataModel";
-import { VoiceType } from "@/types";
 import { useToast } from "@/components/ui/use-toast";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -60,7 +59,7 @@ const CreatePodcast = () => {
     null
   );
 
-  const [voiceType, setVoiceType] = useState<VoiceType | null>(null);
+  const [voiceType, setVoiceType] = useState<string | null>(null);
   const [voicePrompt, setVoicePrompt] = useState<string>("");
 
   const createPodcast = useMutation(api.podcasts.createPodcast);
@@ -147,9 +146,7 @@ const CreatePodcast = () => {
               <Label className="text-16 font-bold text-white-1">
                 Select AI Voice
               </Label>
-              <Select
-                onValueChange={(value) => setVoiceType(value as VoiceType)}
-              >
+              <Select onValueChange={(value) => setVoiceType(value)}>
                 <SelectTrigger
                   className={cn(
                     "text-16 w-full border-none bg-black-1 text-gray-1 focus:ring-offset-orange-1"
